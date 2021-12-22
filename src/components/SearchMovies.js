@@ -9,7 +9,7 @@ function SearchMovies(){
 	
 	useEffect((e)=>{
 		function fetchMovies(){
-			fetch(`https://www.omdbapi.com/?s=${keyword}&apikey=${apiKey}`)
+			fetch(`https://www.omdbapi.com/?s=marvel&apikey=${apiKey}`)
 			.then((res)=>{
 				if(res.ok){
 					return res.json()
