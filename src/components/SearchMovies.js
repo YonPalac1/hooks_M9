@@ -1,39 +1,31 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React,{useState, useEffect, useRef} from 'react';
 
 
 function SearchMovies(){
-	const [movies, setMovies] = useState([])
-	const [keyword, setKeyword] = useState()
+	
+	const [movies,setMovie] = useState([]);
+	
+	const [keyword,setKeyword] = useState('');
+	
+	let inputSearch = useRef();
 	const apiKey = '8697e314';
-	console.log(keyword)
 	
-	useEffect((e)=>{
-		function fetchMovies(){
-			fetch(`https://www.omdbapi.com/?s=marvel&apikey=${apiKey}`)
-			.then((res)=>{
-				if(res.ok){
-					return res.json()
-				}else{
-					throw {
-						status: res.status,
-					}
-				}
-			})
-			.then(movies=>{
-				setMovies(movies.Search)
-				console.log(keyword)
-			})
-			
-		}
-		fetchMovies()
-	}, [])
+	const url = `http://www.omdbapi.com/?s=${keyword}&apikey=${apiKey}`
 
-	
-	const handleSubmit =(event)=> {
-		console.log(keyword);
-		this.fetchMovies()
-		event.preventDefault();
-	  }
+	useEffect(() => {
+		fetch(url).then( r => r.json()).then( data => {
+			if(!data.Error){
+				setMovie(data.Search)
+			} else {				
+				setMovie([])
+			}
+		});
+	}, [keyword])
+
+	const buscarPeli = e => {
+		e.preventDefault();
+		setKeyword(inputSearch.current.value)
+	}
 	return(
 		<div className="container-fluid">
 			{
@@ -42,15 +34,12 @@ function SearchMovies(){
 					<div className="row my-4">
 						<div className="col-12 col-md-6">
 							{/* Buscador */}
-							<form method="GET"onSubmit={handleSubmit}>
+							<form method="GET" onSubmit={ buscarPeli }>
 								<div className="form-group">
 									<label htmlFor="">Buscar por título:</label>
-									<input
-									value={keyword}
-									onChange={(e) => setKeyword(e.target.value)}
-									type="text" className="form-control" />
+									<input ref={inputSearch} type="text" className="form-control" />
 								</div>
-								<button type='submit' className="btn btn-info">Search</button>
+								<button className="btn btn-info">Search</button>
 							</form>
 						</div>
 					</div>
